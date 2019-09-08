@@ -4,12 +4,16 @@ using namespace std;
 
 class BitString {
 	private:
-		unsigned long long hf1 = 0;
-		unsigned long long hf2 = 0;
+		unsigned long long hf1;
+		unsigned long long hf2;
 	public:
 		void operator = (unsigned long long val) {
 			hf1 = 0;
 			hf2 = val;
+		}
+		BitString() {
+			hf1 = 0;
+			hf2 = 0;
 		}
 		BitString operator & (BitString right) {
 			BitString out; 
