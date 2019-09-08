@@ -4,8 +4,8 @@ using namespace std;
 
 class BitString {
 	private:
-		unsigned long long hf1;
-		unsigned long long hf2;
+		unsigned long long hf1 = 0;
+		unsigned long long hf2 = 0;
 	public:
 		void operator = (unsigned long long val) {
 			hf1 = 0;
@@ -37,14 +37,26 @@ class BitString {
 		}
 		BitString operator  << (int right) {
 			BitString out; 
-			out.hf1 = (hf1 << right) | (hf2 >> (64 - right));
-			out.hf2 = hf2 << right;
+			if (right < 64){
+				out.hf1 = (hf1 << right) | (hf2 >> (64 - right));
+				out.hf2 = hf2 << right;
+			}
+			else {
+				out.hf1 = hf2 << (right - 64) ;
+				out.hf2 = 0;
+			}
 			return out;
 		}
 		BitString operator >> (int right) {
 			BitString out; 
-			out.hf2 = (hf2 >> right) | (hf1 << (64 - right));
-			out.hf1 = hf1 >> right;
+			if (right < 64){
+				out.hf2 = (hf2 >> right) | (hf1 << (64 - right));
+				out.hf1 = hf1 >> right;
+			}
+			else {
+				out.hf2 = hf1 >> (right - 64);
+				out.hf1 = 0;
+			} 
 			return out;
 		}
 
@@ -74,7 +86,12 @@ class BitString {
 		bool operator <= (BitString right) {
 			return oneCount() <= right.oneCount();
 		}
-
+		
+		BitString e() {
+			BitString out;
+			out = 1;
+			return out;
+		}
 		void print(const string type) {
 			if(type == "bin") {
 				for(int i = 63; i >= 0; --i){
@@ -119,5 +136,11 @@ int main(void)
 	cout << "a == a:" << (a == a) << "\n";
 	cout << "a < b:" << (a < b) << "\n";
 	cout << "a > b:" << (a > b) << "\n";
+	a = a.e() << 126;
+	cout << "a = a.e << 126:\n";
+	a.print("bin");
+	a = a >> 125 ;
+	cout << "a = a.e >> 125:\n";
+	a.print("bin");
 	return 0;
 }
