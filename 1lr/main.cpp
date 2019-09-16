@@ -7,21 +7,22 @@ class BitString {
 		unsigned long long hf1;
 		unsigned long long hf2;
 	public:
-		void operator = (unsigned long long val) {
-			hf1 = 0;
-			hf2 = val;
-		}
 		BitString() {
 			hf1 = 0;
 			hf2 = 0;
 		}
-		BitString operator & (BitString right) {
+		BitString* operator = ( const unsigned long long val) {
+			hf1 = 0;
+			hf2 = val;
+			return *this;
+		}
+		BitString operator & (const BitString& right) {
 			BitString out; 
 			out.hf1 = hf1 & right.hf1;
 			out.hf2 = hf2 & right.hf2;
 			return out;
 		}
-		BitString operator | (BitString right) {
+		BitString operator | (const BitString& right) {
 			BitString out; 
 			out.hf1 = hf1 | right.hf1;
 			out.hf2 = hf2 | right.hf2;
@@ -33,13 +34,13 @@ class BitString {
 			out.hf2 = ~hf2;
 			return out;
 		}
-		BitString operator ^ (BitString right) {
+		BitString operator ^ (const BitString& right) {
 			BitString out; 
 			out.hf1 = hf1 ^ right.hf1;
 			out.hf2 = hf2 ^ right.hf2;
 			return out;
 		}
-		BitString operator  << (int right) {
+		BitString operator  << (const int right) {
 			BitString out; 
 			if (right < 64){
 				out.hf1 = (hf1 << right) | (hf2 >> (64 - right));
@@ -51,7 +52,7 @@ class BitString {
 			}
 			return out;
 		}
-		BitString operator >> (int right) {
+		BitString operator >> (const int right) {
 			BitString out; 
 			if (right < 64){
 				out.hf2 = (hf2 >> right) | (hf1 << (64 - right));
@@ -75,19 +76,19 @@ class BitString {
 			return counter;
 		}
 
-		bool operator == (BitString right) {
+		bool operator == (const BitString& right) {
 			return oneCount() == right.oneCount();
 		}
-		bool operator < (BitString right) {
+		bool operator < (const BitString& right) {
 			return oneCount() < right.oneCount();
 		}
-		bool operator > (BitString right) {
+		bool operator > (const BitString& right) {
 			return oneCount() > right.oneCount();
 		}
-		bool operator >= (BitString right) {
+		bool operator >= (const BitString& right) {
 			return oneCount() >= right.oneCount();
 		}
-		bool operator <= (BitString right) {
+		bool operator <= (const BitString& right) {
 			return oneCount() <= right.oneCount();
 		}
 		
