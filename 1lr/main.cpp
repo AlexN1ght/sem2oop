@@ -1,3 +1,8 @@
+/*
+Цапков А.М.
+￼￼￼Вариант №7. Создать класс BitString для работы с 128-битовыми строками. Битовая строка должна быть представлена двумя полями типа unsigned long long. Должны быть реализованы все традиционные операции для работы с битами: and, or, xor, not. Реализовать сдвиг влево shiftLeft и сдвиг вправо shiftRight на заданное количество битов. Реализовать операцию вычисления количества единичных битов, операции сравнения по количеству единичных битов. Реализовать операцию проверки включения.
+*/
+
 #include <iostream>
 
 using namespace std;
@@ -11,7 +16,7 @@ class BitString {
 			hf1 = 0;
 			hf2 = 0;
 		}
-		BitString* operator = ( const unsigned long long val) {
+		BitString operator = ( const unsigned long long val) {
 			hf1 = 0;
 			hf2 = val;
 			return *this;
@@ -76,19 +81,19 @@ class BitString {
 			return counter;
 		}
 
-		bool operator == (const BitString& right) {
+		bool operator == (BitString& right) {
 			return oneCount() == right.oneCount();
 		}
-		bool operator < (const BitString& right) {
+		bool operator < (BitString& right) {
 			return oneCount() < right.oneCount();
 		}
-		bool operator > (const BitString& right) {
+		bool operator > (BitString& right) {
 			return oneCount() > right.oneCount();
 		}
-		bool operator >= (const BitString& right) {
+		bool operator >= (BitString& right) {
 			return oneCount() >= right.oneCount();
 		}
-		bool operator <= (const BitString& right) {
+		bool operator <= (BitString& right) {
 			return oneCount() <= right.oneCount();
 		}
 		
@@ -109,7 +114,6 @@ class BitString {
 				cout << '\n';
 			}
 		}
-
 };
 
 int main(void)
@@ -139,8 +143,18 @@ int main(void)
 	a.print("bin");
 	cout << a.oneCount() << "\n";
 	cout << "a == a:" << (a == a) << "\n";
+	cout << "a <= a:" << (a <= a) << "\n";
+	cout << "a <= b:" << (a <= b) << "\n";
+	cout << "a >= a:" << (a >= a) << "\n";
+	cout << "a >= b:" << (a >= b) << "\n";
 	cout << "a < b:" << (a < b) << "\n";
 	cout << "a > b:" << (a > b) << "\n";
+	a = ~a;
+	cout << "a = ~a\n"; 
+	a.print("bin");
+	a = a ^ b;
+	cout << "a = a ^ b\n"; 
+	a.print("bin");
 	a = a.e() << 126;
 	cout << "a = a.e << 126:\n";
 	a.print("bin");
