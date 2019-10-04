@@ -1,3 +1,0 @@
-/Users/alex/Documents/Study/Labs/OOP/sem3oop/2lr/cmaketmp/CMakeFiles/rebuild_cache.dir
-/Users/alex/Documents/Study/Labs/OOP/sem3oop/2lr/cmaketmp/CMakeFiles/edit_cache.dir
-/Users/alex/Documents/Study/Labs/OOP/sem3oop/2lr/cmaketmp/CMakeFiles/oop_exercise_02.dir
