@@ -78,11 +78,8 @@ class Rhombus : public Figure {
             points[3] = in1;
             points[1] = in2;
             double tgA = abs(points[3].y - points[1].y) / abs(points[3].x - points[1].x);
-            std::cout << tgA << ' ' << atan(tgA) << ' ' << 90 * M_PI / 180 << ' ' << cos(90 * M_PI / 180 - atan(tgA)) <<'\n';
             Point mid((points[3].x +points[1].x) / 2, (points[3].y +points[1].y) / 2);
-            std::cout << mid << '\n';
             double midLen = sqrt(length*length - pow(distance(mid, in1), 2));
-            std::cout << midLen << '\n';
             if (points[3].x > points[1].x) {
                 points[0].x = mid.x + midLen * cos(90 * M_PI / 180 - atan(tgA));
                 points[2].x = mid.x - midLen * cos(90 * M_PI / 180 - atan(tgA));
@@ -177,3 +174,4 @@ class Trap : public Figure {
     private:
         Point points[4];
 };
+
