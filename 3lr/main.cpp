@@ -47,6 +47,7 @@ int main() {
     command["print"] = PRINT;
     command["del"] = DEL;
     command["rec"] = REC;
+    command["rectangle"] = REC;
     command["quit"] = EXIT;
     command["q"] = EXIT;
     command["centr_of"] = CENTR;
