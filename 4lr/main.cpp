@@ -195,6 +195,7 @@ int main() {
                                 std::get<3>(TuD) = PairWIO<double,double>((double)tmpP4.first, (double)tmpP4.second);
                                 break;
                         }
+                        state = FUNC;
                         break;
                 }
                 while(getchar() != '\n');

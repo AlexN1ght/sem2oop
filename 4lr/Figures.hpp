@@ -126,12 +126,44 @@ class Trap : public Figure {
         }
 };
 
-template <class T>
+template <typename T>
+constexpr bool IsTuple = false;
+template<typename ... types>
+constexpr bool IsTuple<std::tuple<types...>>   = true;
+
+template <class T, 
+typename  std::enable_if<std::tuple_size<T>::value == 4>::type* = nullptr> 
+void printCoor(T figure) {
+    std::cout << "1st = " << std::get<0>(figure) << "\t2nd = " << std::get<1>(figure) << "\n4rd = " << std::get<3>(figure) << "\t3th = " << std::get<2>(figure) << '\n';
+}
+
+template <class T, 
+typename  std::enable_if<!(IsTuple<T>)>::type* = nullptr> 
 void printCoor(T figure) {
     std::cout << "1st = " << figure.points[0] << "\t2nd = " << figure.points[1] << "\n4rd = " << figure.points[3] << "\t3th = " << figure.points[2] << '\n';
 }
 
-template <class T>
+template <class T, 
+typename  std::enable_if<std::tuple_size<T>::value == 4>::type* = nullptr>
+auto centr(T figure) {
+    PairWIO<double,double> out;
+   
+    out.first += std::get<0>(figure).first;
+    out.second += std::get<0>(figure).second;
+    out.first += std::get<1>(figure).first;
+    out.second += std::get<1>(figure).second;
+    out.first += std::get<2>(figure).first;
+    out.second += std::get<2>(figure).second;
+    out.first += std::get<3>(figure).first;
+    out.second += std::get<3>(figure).second;
+    
+    out.first /= 4;
+    out.second /= 4;
+    return out;
+}
+
+template <class T, 
+typename  std::enable_if<!(IsTuple<T>)>::type* = nullptr>
 auto centr(T figure) {
     PairWIO<double,double> out;
     for (int i = 0; i < 4; i++) {
@@ -152,21 +184,14 @@ double geron(PairWIO<T,T> one, PairWIO<T,T> two, PairWIO<T,T> three) {
     return sqrt(p * (p - a) * (p - b) * (p - c));
 }
 
-template <class T>
+template <class T, 
+typename  std::enable_if<!(IsTuple<T>)>::type* = nullptr>
 double area(T figure) { 
     return geron(figure.points[0], figure.points[1], figure.points[2]) + geron(figure.points[0], figure.points[3], figure.points[2]);
 }
 
-/*
 template <class T, 
-typename  std::enable_if<std::is_same<T, Rectangle<int>>::value || std::is_same<T, Rectangle<double>>::value || std::is_same<T, Rectangle<float>>::value>::type* = nullptr>
+typename  std::enable_if<std::tuple_size<T>::value == 4>::type* = nullptr>
 double area(T figure) {
-    return (figure.points[1].first - figure.points[0].first) * (figure.points[0].second - figure.points[3].second);
+    return geron(std::get<0>(figure), std::get<1>(figure), std::get<2>(figure)) + geron(std::get<0>(figure), std::get<3>(figure), std::get<2>(figure));
 }
-
-template <class T, 
-typename  std::enable_if<std::is_same<T, Rhombus<int>>::value || std::is_same<T, Rhombus<double>>::value || std::is_same<T, Rhombus<float>>::value>::type* = nullptr>
-double area(T figure) {
-    return (distance(figure.points[1], figure.points[3]) * distance(figure.points[0], figure.points[2])) / 2;
-}
-*/
