@@ -48,8 +48,12 @@ int main() {
     Trap<float>  TF;
     Trap<double>  TD;
 
+    std::tuple<PairWIO<int,int>, PairWIO<int,int>, PairWIO<int,int>, PairWIO<int,int>> TuI;
+    std::tuple<PairWIO<float,float>, PairWIO<float,float>, PairWIO<float,float>, PairWIO<float,float>> TuF;
+    std::tuple<PairWIO<double, double>, PairWIO<double, double>, PairWIO<double, double>, PairWIO<double, double>> TuD;
+
     using Point = PairWIO<double,double>;
-    Point tmpP1, tmpP2;
+    Point tmpP1, tmpP2, tmpP3, tmpP4;
     std::string comId, figType, typeId;
     //Rectangle<int>* tmpV;
     int id;
@@ -167,7 +171,30 @@ int main() {
                         state = FUNC;
                         break;
                     case TUPLE:
-                        
+                        if (!( std::cin >> tmpP1 >> tmpP2 >> tmpP3 >> tmpP4)) {
+                            std::cout << "Invalid Params\n";
+                            break;
+                        }
+                        switch (types[typeId]) {
+                            case INT:
+                                std::get<0>(TuI) = PairWIO<int,int>((int)tmpP1.first, (int)tmpP1.second);
+                                std::get<1>(TuI) = PairWIO<int,int>((int)tmpP2.first, (int)tmpP2.second);
+                                std::get<2>(TuI) = PairWIO<int,int>((int)tmpP3.first, (int)tmpP3.second);
+                                std::get<3>(TuI) = PairWIO<int,int>((int)tmpP4.first, (int)tmpP4.second);
+                                break;
+                            case FLOAT:
+                                std::get<0>(TuF) = PairWIO<float,float>((float)tmpP1.first, (float)tmpP1.second);
+                                std::get<1>(TuF) = PairWIO<float,float>((float)tmpP2.first, (float)tmpP2.second);
+                                std::get<2>(TuF) = PairWIO<float,float>((float)tmpP3.first, (float)tmpP3.second);
+                                std::get<3>(TuF) = PairWIO<float,float>((float)tmpP4.first, (float)tmpP4.second);
+                                break;
+                            case DOUBLE:
+                                std::get<0>(TuD) = PairWIO<double,double>((double)tmpP1.first, (double)tmpP1.second);
+                                std::get<1>(TuD) = PairWIO<double,double>((double)tmpP2.first, (double)tmpP2.second);
+                                std::get<2>(TuD) = PairWIO<double,double>((double)tmpP3.first, (double)tmpP3.second);
+                                std::get<3>(TuD) = PairWIO<double,double>((double)tmpP4.first, (double)tmpP4.second);
+                                break;
+                        }
                         break;
                 }
                 while(getchar() != '\n');
@@ -238,6 +265,19 @@ int main() {
                                 break;
                         }
                         break;
+                    case TUPLE:
+                        switch (types[typeId]) {
+                            case INT:
+                                printCoor(TuI);
+                                break;
+                            case FLOAT:
+                                printCoor(TuF);
+                                break;
+                            case DOUBLE:
+                                printCoor(TuD);
+                                break;
+                        }
+                        break;
                 }
                 state = FUNC;
                 break;
@@ -282,6 +322,19 @@ int main() {
                                 break;
                         }
                         break;
+                    case TUPLE:
+                        switch (types[typeId]) {
+                            case INT:
+                                std::cout << centr(TuI) << '\n';
+                                break;
+                            case FLOAT:
+                                std::cout << centr(TuF) << '\n';
+                                break;
+                            case DOUBLE:
+                                std::cout << centr(TuD) << '\n';
+                                break;
+                        }
+                        break;
                 }
                 state = FUNC;
                 break;
@@ -323,6 +376,19 @@ int main() {
                                 break;
                             case DOUBLE:
                                 std::cout << area(TD) << '\n';
+                                break;
+                        }
+                        break;
+                    case TUPLE:
+                        switch (types[typeId]) {
+                            case INT:
+                                std::cout << area(TuI) << '\n';
+                                break;
+                            case FLOAT:
+                                std::cout << area(TuF) << '\n';
+                                break;
+                            case DOUBLE:
+                                std::cout << area(TuD) << '\n';
                                 break;
                         }
                         break;
