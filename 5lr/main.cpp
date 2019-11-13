@@ -18,15 +18,22 @@
 #include "Vector.hpp"
 #include <map>
 #include "Figures.hpp"
+#include <algorithm>
 
 enum { 
     ERR, ADD,
     PRINT, DEL,
     REC, EXIT,
     CENTR, AREA,
+    LES_AREA,
     TRAP, RHOMB,
     SIZE, HELP
 };
+
+template <class T>
+void printCoorFE(T In) {
+    printCoor(*In);
+}
 
 void help() {
     std::cout << "Commands: add, del, print, area, size, quit, help, centr\n";
@@ -40,6 +47,7 @@ int main() {
     std::string comId, figType;
     //Rectangle* tmpV;
     int id;
+    int area_key;
     double length, angle, overallArea;
     int status = 1;
     TVector<Figure<int>*> vec;
@@ -56,6 +64,8 @@ int main() {
     command["area_of"] = AREA;
     command["area"] = AREA;
     command["size_of"] = AREA;
+    command["less_then"] = LES_AREA;
+    command["less"] = LES_AREA;
     command["size"] = SIZE;
     command["trap"] = TRAP;
     command["rhomb"] = RHOMB;
@@ -103,11 +113,10 @@ int main() {
             case PRINT:
                 std::cin >> comId;
                 if (comId == "all") {
-                    std::for_each(vec.begin(), vec.end(), printCoor); 
-                    for (int i = 0; i < vec.size(); i++) {
-                        //vec[i]->printCoor();
+                    std::for_each(vec.begin(), vec.end(), [](auto& k){
+                        printCoor(*k);
                         putchar('\n');
-                    }
+                    });
                 } else {
                     try {
                         id = std::stoi(comId);
@@ -155,6 +164,12 @@ int main() {
                     }
                     std::cout << area(*vec[id]) << '\n';
                 }
+                break;
+            case LES_AREA:
+                std::cin >> area_key;
+                std::cout << std::count_if(vec.begin(), vec.end(), [area_key](auto& k) {
+                    return area_key > area(*k);
+                    }) << '\n';
                 break;
             case DEL:
                 if (!(std::cin >> id)) {
