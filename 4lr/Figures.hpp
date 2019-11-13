@@ -190,6 +190,9 @@ double area(T figure) {
     return geron(figure.points[0], figure.points[1], figure.points[2]) + geron(figure.points[0], figure.points[3], figure.points[2]);
 }
 
+
+
+
 template <class T, 
 typename  std::enable_if<std::tuple_size<T>::value == 4>::type* = nullptr>
 double area(T figure) {
