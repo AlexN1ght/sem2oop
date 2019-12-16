@@ -228,8 +228,8 @@ int main() {
                 while(!undo.empty()) {
                     if (undo.top().type == 1) {
                         delete undo.top().store;
-                        undo.pop();
                     }
+                    undo.pop();
                 }
                 //status = 0;
                 return 0;
