@@ -6,5 +6,7 @@
 *.fdb_latexmk
 *.synctex.gz
 *.vscode
+*.DS_Store
+*/build
 */cmaketmp
 cmaketmp
