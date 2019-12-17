@@ -1,21 +1,20 @@
 /*
 Студент: Цапков А.М.
 Группа: М8О-207Б
-Создать шаблон динамической коллекцию, согласно варианту задания:
-1.       Коллекция должна быть реализована с помощью умных указателей (std::shared_ptr, std::weak_ptr). Опционально использование std::unique_ptr;
-2.       В качестве параметра шаблона коллекция должна принимать тип данных;
-3.       Реализовать forward_iterator по коллекции;
-4.       Коллекция должны возвращать итераторы begin() и  end();
-5.       Коллекция должна содержать метод вставки на позицию итератора insert(iterator);
-6.       Коллекция должна содержать метод удаления из позиции итератора erase(iterator);
-7.       При выполнении недопустимых операций (например выход аз границы коллекции или удаление не существующего элемента) необходимо генерировать исключения;
-8.       Итератор должен быть совместим со стандартными алгоритмами (например, std::count_if)
-9.       Коллекция должна содержать метод доступа: o Стек – pop, push, top; o Очередь – pop, push, top;
-oСписок, Динамический массив – доступ к элементу по оператору [];
-10.    Реализовать программу, которая: o Позволяет вводить с клавиатуры фигуры (с типом int в качестве параметра шаблона фигуры) и добавлять в коллекцию;
-oПозволяет удалять элемент из коллекции по номеру элемента; o Выводит на экран введенные фигуры c помощью std::for_each; o Выводит на экран количество объектов, у которых площадь меньше заданной (с помощью 
-std::count_if);
-
+Спроектировать простейший графический векторный редактор.
+Требование к функционалу редактора:
+    • создание нового документа
+    • импорт документа из файла
+    • экспорт документа в файл
+    • создание графического примитива (согласно варианту задания)
+    • удаление графического примитива
+    • отображение документа на экране (печать перечня графических объектов и их характеристик)
+    • реализовать операцию undo, отменяющую последнее сделанное действие. Должно действовать для
+операций добавления/удаления фигур.
+Требования к реализации:
+    • Создание графических примитивов необходимо вынести в отдельный класс – Factory.
+    • Сделать упор на использовании полиморфизма при работе с фигурами;
+    • Взаимодействие с пользователем (ввод команд) реализовать в функции main;
 */
 
 #include <iostream>
@@ -29,19 +28,13 @@ enum {
     ERR, ADD,
     PRINT, DEL,
     REC, EXIT,
-    UNDO,
+    UNDO, SAVE,
+    LOAD,
     CENTR, AREA,
     LES_AREA,
     TRAP, RHOMB,
     SIZE, HELP
 };
-
-/*
-template <class T>
-void printCoorFE(T In) {
-    printCoor(*In);
-}
-*/
 
 template <class T>
 struct Action {
@@ -51,8 +44,55 @@ struct Action {
     Action(int in, int pos, Figure<T>* inPo): type(in), position(pos), store(inPo){}
 };
 
+template <class T>
+int Save(TVector<Figure<T>*>& toS, const char* path) {
+    FILE* stor = fopen(path, "wb");
+    if (!stor) {
+        return 0;
+    }
+    int s = toS.size();
+    fwrite(&s, sizeof(int), 1, stor);
+    
+    for (int i = 0; i < s; i++) {
+        fwrite(toS[i], sizeof(Figure<T>), 1, stor);
+    }
+
+    fclose(stor);
+    return 1;
+}
+
+template <class T>
+int Load(TVector<Figure<T>*>& vec, std::stack<Action<T>>& undo, const char* path) {
+    FILE* stor = fopen(path, "rb");
+    if (!stor) {
+        return 0;
+    }
+    for (int i = vec.size() - 1; i >= 0; i--) {
+        delete vec[i];
+        vec.erase(vec.begin() + i);
+    }
+    while(!undo.empty()) {
+        if (undo.top().type == 1) {
+            delete undo.top().store;
+        }
+        undo.pop();
+    }
+    int s;
+    fread(&s, sizeof(int), 1, stor);
+
+    for (int i = 0; i < s; i++) {
+        vec.push_back((Figure<T>*)malloc(sizeof(Figure<T>)));
+        fread(vec[i], sizeof(Figure<T>), 1, stor);
+    }
+
+    fclose(stor);
+    return 1;
+}
+
+
+
 void help() {
-    std::cout << "\nCommands: add, del, print, area, size, quit, help, centr, less_then and undo\n";
+    std::cout << "\nCommands: save, load, add, del, print, area, size, quit, help, centr, less_then and undo\n";
     std::cout << "Supported Figures: rectangle, trap, rhombus\n\n";
     std::cout << "For rectangle: 2 diagonal points (0 0 2 2)\n";
     std::cout << "For trap: 2 points of founding of a trap, angle and a length of a side ( 0 0 4 4 45 2)\n";
@@ -87,6 +127,8 @@ int main() {
     command["size"] = SIZE;     command["trap"] = TRAP;
     command["rhomb"] = RHOMB;   command["undo"] = UNDO;
     command["u"] = UNDO;        command["help"] = HELP;
+    command["save"] = SAVE;     command["load"] = LOAD;
+    command["s"] = SAVE;        command["l"] = LOAD;
     
 
 
@@ -221,6 +263,24 @@ int main() {
             case ERR:
                 std::cout << "Invalid command\n";
                 break;
+            case SAVE:
+                std::cout << "to file:\n";
+                std::cin >> comId;
+                if(Save(vec, comId.c_str())) {
+                    std::cout << "Done\n";
+                } else {
+                    std::cout << "Error\n";
+                }
+                break;
+            case LOAD:
+                std::cout << "from file:\n";
+                std::cin >> comId;
+                if(Load(vec, undo, comId.c_str())) {
+                    std::cout << "Done\n";
+                } else {
+                    std::cout << "Error\n";
+                }
+                break;
             case EXIT:
                 for (int i = 0; i < vec.size(); i++) {
                     delete vec[i];
@@ -231,7 +291,6 @@ int main() {
                     }
                     undo.pop();
                 }
-                //status = 0;
                 return 0;
                 break;
         }
@@ -240,4 +299,3 @@ int main() {
     }
     return 0;
 }
-
